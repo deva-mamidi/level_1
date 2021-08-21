@@ -3,7 +3,9 @@ package com.deva.mamidi.moviecatalogueservice.controller;
 import com.deva.mamidi.moviecatalogueservice.model.CatalogueItem;
 import com.deva.mamidi.moviecatalogueservice.model.Movie;
 import com.deva.mamidi.moviecatalogueservice.model.Rating;
+import com.deva.mamidi.moviecatalogueservice.model.UserRating;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,16 +31,17 @@ public class MovieCatalogueController {
     public List<CatalogueItem> getCatalogue(@PathVariable("userId") String userId){
 
         //Step -1 create mock data
-        List<Rating> ratings = Arrays.asList(
-                new Rating("1234", 4),
-                new Rating("5678", 3)
-        );
+//        List<Rating> ratings = Arrays.asList(
+//                new Rating("1234", 4),
+//                new Rating("5678", 3)
+//        );
+
+        UserRating ratings = restTemplate.getForObject("http://localhost:8083/ratings/users/" + userId, UserRating.class);
 
         //Step -2 map through ratings and call movie api with rest template
-        return ratings.stream().map(
+        return ratings.getRatings().stream().map(
                 rating -> {
                     //Movie movie = restTemplate.getForObject("http://localhost:8082/movies/"+ rating.getMovieId(), Movie.class);
-
                     Movie movie = builder.build()
                             .get().uri("http://localhost:8082/movies/"+ rating.getMovieId())
                             .retrieve()
