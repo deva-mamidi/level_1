@@ -9,6 +9,9 @@ public class UserRating {
         this.ratings = ratings;
     }
 
+    public UserRating() {
+    }
+
     public List<Rating> getRatings() {
         return ratings;
     }
